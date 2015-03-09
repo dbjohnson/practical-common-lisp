@@ -33,7 +33,6 @@ def select(*args):
 	def column_matches(row, col, val):
 		return eval('row.%s == %s' % (col, field_to_formatted_string(col, val)))
 
-	print zip(args, args[1:])
 	return [row for row in db if all([column_matches(row, col, val) for col, val in args])]
 
 

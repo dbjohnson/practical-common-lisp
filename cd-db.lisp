@@ -1,4 +1,4 @@
-; http://www.gigamonkeys.com/book/practical-a-simple-database.html
+;;;; http://www.gigamonkeys.com/book/practical-a-simple-database.html
 
 (defvar *db* nil)
 
@@ -71,6 +71,7 @@
                (if ripped-p (setf (getf row :ripped) ripped)))
              row) *db*)))
 
+
 (defun delete-rows (selector-fn)
   (setf *db* (remove-if selector-fn *db*)))
 
@@ -80,8 +81,8 @@
   ; we're just making a string for dynamic evaluation.  We use the leading ` instead of '
   ; so we can use the , operator to sub in the field and value 
   `(equal (getf cd ,field) ,value))
-  ; oh by the way, could also just use a formatted string as below - not sure why the above is better?
-  ; (format t "(EQUAL ~a ~a)" field val))
+  ; oh by the way, we could just use a formatted string like so - not clear why the above is better
+  ; '"(equal (getf cd ~a) \"~a\")" 'field value)
 
 
 (defun make-comparisons-list (field-value-pairs)
@@ -92,11 +93,10 @@
 (defmacro where (&rest field-value-pairs)
   `#'(lambda (cd) (and ,@(make-comparisons-list field-value-pairs))))
 
-(load-db "cd.db")
-
 
 ; (add-cds)
-; (select (where :artist "Phish" :ripped T))
-; (update (where :artist "Phish") :rating 1)
-; (dump-db)
-; (save-db "cd.db")
+(add-record (make-cd "Hoist" "Phish" 6 T))
+(format t "~a~%" (select (where :title "Hoist")))
+(update (where :artist "Phish") :rating 1)
+(format t "~a~%" (select (where :title "Hoist")))
+(dump-db)
